@@ -5,6 +5,8 @@ const prisma = new Prisma({
   endpoint: "http://localhost:4466"
 });
 
+export { prisma as default };
+
 //prisma exist
 //이런식으로 쓴다
 // prisma.exists
@@ -18,28 +20,28 @@ const prisma = new Prisma({
 //   console.log(JSON.stringify(data, undefined, 2));
 // });
 
-const createPostForUser = async (authorId, data) => {
-  const userExists = await prisma.exists.User({ id: authorId });
+// const createPostForUser = async (authorId, data) => {
+//   const userExists = await prisma.exists.User({ id: authorId });
 
-  if (!userExists) {
-    throw new Error("User not found!");
-  }
+//   if (!userExists) {
+//     throw new Error("User not found!");
+//   }
 
-  const { author } = await prisma.mutation.createPost(
-    {
-      data: {
-        ...data,
-        author: {
-          connect: {
-            id: authorId
-          }
-        }
-      }
-    },
-    "{ author { id name email posts { id title published } } }"
-  );
-  return author;
-};
+//   const { author } = await prisma.mutation.createPost(
+//     {
+//       data: {
+//         ...data,
+//         author: {
+//           connect: {
+//             id: authorId
+//           }
+//         }
+//       }
+//     },
+//     "{ author { id name email posts { id title published } } }"
+//   );
+//   return author;
+// };
 
 // createPostForUser("cjryqwvtv00tf0977xsx28vr", {
 //   title: "Great book is so good",
@@ -76,24 +78,24 @@ const createPostForUser = async (authorId, data) => {
 //   });
 
 // Promise로 만듬
-const updatePostForUser = async (id, data) => {
-  const postExists = await prisma.exists.Post({ id });
-  if (!postExists) {
-    throw new Error("Post not found!");
-  }
-  const { author } = await prisma.mutation.updatePost(
-    {
-      data: {
-        ...data
-      },
-      where: {
-        id
-      }
-    },
-    "{ author { id name email posts { id title published } } }"
-  );
-  return author;
-};
+// const updatePostForUser = async (id, data) => {
+//   const postExists = await prisma.exists.Post({ id });
+//   if (!postExists) {
+//     throw new Error("Post not found!");
+//   }
+//   const { author } = await prisma.mutation.updatePost(
+//     {
+//       data: {
+//         ...data
+//       },
+//       where: {
+//         id
+//       }
+//     },
+//     "{ author { id name email posts { id title published } } }"
+//   );
+//   return author;
+// };
 // updatePostForUser("cjrypmait00o709777569wbnw", {
 //   title: "fuck you ass hole",
 //   body: "똥구멍좋아용"
