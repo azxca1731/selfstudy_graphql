@@ -50,33 +50,48 @@ const Mutation = {
 
         // return deletedUsers[0];
     },
-    updateUser(parent, args, { db }, info) {
-        const { id, data } = args;
-        const user = db.users.find(user => user.id === id);
+    async updateUser(parent, args, { prisma }, info) {
+        const idExist = await prisma.exists.User({ id: args.id });
 
-        if (!user) {
-            throw new Error("User not found");
+        if (!idExist) {
+            throw new Error("User doesn't exists");
         }
 
-        if (typeof data.email === "string") {
-            const emailTaken = db.users.some(user => user.email === data.email);
+        const updatedUser = await prisma.mutation.updateUser(
+            {
+                where: { id: args.id },
+                data: args.data
+            },
+            info
+        );
 
-            if (emailTaken) {
-                throw new Error("Email taken");
-            }
+        return updatedUser;
+        // const { id, data } = args;
+        // const user = db.users.find(user => user.id === id);
 
-            user.email = data.email;
-        }
+        // if (!user) {
+        //     throw new Error("User not found");
+        // }
 
-        if (typeof data.name === "string") {
-            user.name = data.name;
-        }
+        // if (typeof data.email === "string") {
+        //     const emailTaken = db.users.some(user => user.email === data.email);
 
-        if (typeof data.age !== "undefined") {
-            user.age = data.age;
-        }
+        //     if (emailTaken) {
+        //         throw new Error("Email taken");
+        //     }
 
-        return user;
+        //     user.email = data.email;
+        // }
+
+        // if (typeof data.name === "string") {
+        //     user.name = data.name;
+        // }
+
+        // if (typeof data.age !== "undefined") {
+        //     user.age = data.age;
+        // }
+
+        // return user;
     },
     createPost(parent, args, { db, pubsub }, info) {
         const userExists = db.users.some(user => user.id === args.data.author);
